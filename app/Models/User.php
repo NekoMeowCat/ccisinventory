@@ -27,10 +27,16 @@ class User extends Authenticatable implements FilamentUser
         // Get the panel id or path
         $panelId = $panel->getId(); // Method to get panel ID, adjust if necessary
 
+        // Define restricted panels for each role
+        $restrictedPanels = [
+            'panel_user' => ['admin', 'admin_user'], // Panel_user cannot access admin and admin_user panels
+            'Staff' => ['admin'], // Staff cannot access admin panel
+            'Admin' => ['admin'], // Admin cannot access admin panel
+        ];
+
         // Check access based on the user's role
-        if ($userRole === 'panel_user') {
-            // Prevent access to the admin panel
-            return $panelId !== 'admin'; // Admin panel id
+        if (isset($restrictedPanels[$userRole])) {
+            return !in_array($panelId, $restrictedPanels[$userRole]);
         }
 
         // Other roles can access all panels
