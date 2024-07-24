@@ -29,6 +29,7 @@ return [
         'name' => 'panel_user',
     ],
 
+
     'permission_prefixes' => [
         'resource' => [
             'view',

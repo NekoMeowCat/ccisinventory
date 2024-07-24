@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Actions\Action;
 
 class BorrowResource extends Resource
 {
@@ -41,7 +42,7 @@ class BorrowResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('borrowed_date')
                     ->required()
-                    ->hiddenOn('create')
+                    ->hiddenOn('edit')
                     ->default(fn () => now()->format('Y-m-d'))
                     ->maxLength(255),
                 Forms\Components\TextInput::make('returned_date')
@@ -68,14 +69,17 @@ class BorrowResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('request_form')
                     ->searchable(),
-                Tables\Columns\TextColumn::make("name"),
                 \EightyNine\Approvals\Tables\Columns\ApprovalStatusColumn::make("approvalStatus.status"),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                ...\EightyNine\Approvals\Tables\Actions\ApprovalActions::make(
+                    // define your action here that will appear once approval is completed
+                    Action::make("."),
+
+                ),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

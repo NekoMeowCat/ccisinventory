@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\AdminUser\Resources;
 
-use App\Filament\Resources\BorrowResource\Pages;
-use App\Filament\Resources\BorrowResource\RelationManagers;
+use App\Filament\AdminUser\Resources\BorrowResource\Pages;
+use App\Filament\AdminUser\Resources\BorrowResource\RelationManagers;
 use App\Models\Borrow;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -13,7 +13,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Actions\Action;
-
 
 class BorrowResource extends Resource
 {
@@ -35,9 +34,6 @@ class BorrowResource extends Resource
                 Forms\Components\Select::make('facility_id')
                     ->relationship('facility', 'name')
                     ->nullable(),
-                Forms\Components\TextInput::make('request_status')
-                    ->required()
-                    ->maxLength(255),
                 Forms\Components\TextInput::make('request_form')
                     ->required()
                     ->maxLength(255),
@@ -57,7 +53,6 @@ class BorrowResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
-                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('equipment.name')
                     ->numeric()
