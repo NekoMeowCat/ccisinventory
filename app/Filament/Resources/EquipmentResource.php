@@ -10,12 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Grid;
-
-
+use Filament\Forms\Components\Select;
 
 class EquipmentResource extends Resource
 {
@@ -27,74 +22,65 @@ class EquipmentResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('Equipment Information')
+                Forms\Components\Section::make('Equipment Details')
                     ->schema([
-                        Grid::make(2)
+                        Forms\Components\Grid::make(3)
                             ->schema([
-                                Forms\Components\Select::make('category_id')
-                                    ->relationship('category', 'description')
-                                    ->required(),
-                                Forms\Components\Select::make('user_id')
-                                    ->relationship('user', 'name')
-                                    ->required()
-                                    ->default(auth()->id()),
+                                Forms\Components\TextInput::make('name')
+                                    ->maxLength(255),
                                 Forms\Components\Select::make('facility_id')
                                     ->relationship('facility', 'name')
                                     ->required(),
-                                Forms\Components\TextInput::make('unit_id')
-                                    ->label('Unit ID')
-                                    ->disabled() // Make unit_id read-only
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->default(fn () => Equipment::generateUniqueUnitID()),
-                                Forms\Components\TextInput::make('brand_name')
-                                    ->required()
+                                Forms\Components\Select::make('category_id')
+                                    ->relationship('category', 'name')
+                                    ->required(),
+                                Forms\Components\TextInput::make('unit_no')
+                                    ->label('Unit Number')
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('item_number')
-                                    ->label('Item Number')
-                                    ->disabled() // Make item_number read-only
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->default(fn () => Equipment::generateUniqueItemNumber()),
-                                Forms\Components\TextInput::make('property_number')
-                                    ->label('Property Number')
-                                    ->disabled()
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->default(fn () => Equipment::generateUniquePropertyNumber()),
-                                Forms\Components\TextInput::make('control_number')
-                                    ->label('Control Number')
-                                    ->disabled()
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->default(fn () => Equipment::generateUniqueControlNumber()),
+                                Forms\Components\TextInput::make('description')
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('specifications')
+                                    ->maxLength(255),
                                 Forms\Components\Select::make('status')
                                     ->options([
-                                        'Available' => 'Available',
-                                        'Out of Stock' => 'Out of Stock',
+                                        'Working' => 'Working',
+                                        'For Repair' => 'For Repair',
                                         'For Replacement' => 'For Replacement',
+                                        'Lost' => 'Lost',
+                                        'For Disposal' => 'For Disposal',
+                                        'Disposed' => 'Disposed',
                                         'Borrowed' => 'Borrowed',
-                                        'Returned' => 'Returned',
-                                    ]),
+                                    ])
+                                    ->native(false),
                                 Forms\Components\TextInput::make('date_acquired')
-                                    ->required()
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('supplier')
-                                    ->required()
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('quantity')
-                                    ->required()
+                                Forms\Components\TextInput::make('amount')
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('specification')
-                                    ->required()
+                                Forms\Components\TextInput::make('estimated_life')
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('item_no')
+                                    ->label('Item Number')
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('property_no')
+                                    ->label('Property Number')
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('control_no')
+                                    ->label('Control Number')
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('serial_no')
+                                    ->label('Serial Number')
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('no_of_stocks')
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('restocking_point')
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('person_liable')
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('remarks')
                                     ->maxLength(255),
                             ]),
-                    ]),
-                Section::make('Facility Image')
-                    ->schema([
-                        Forms\Components\TextInput::make('facility_img')
-                            ->required()
-                            ->maxLength(255),
                     ]),
             ]);
     }
@@ -103,46 +89,51 @@ class EquipmentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('category_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('facility_id')
-                    ->numeric()
-                    ->sortable(),
-                Forms\Components\TextInput::make('unit_id')
-                    ->label('Unit ID')
-                    ->disabled() // Make unit_id read-only
-                    ->required()
-                    ->maxLength(255),
-                Tables\Columns\TextColumn::make('brand_name')
+                Tables\Columns\TextColumn::make('unit_no')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('item_number')
+                Tables\Columns\TextColumn::make('facility.name')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('category.name')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('description')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('property_number')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('control_number')
+                Tables\Columns\TextColumn::make('specifications')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->searchable(),
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Working' => 'success',
+                        'For Repair' => 'warning',
+                        'For Replacement' => 'primary',
+                        'Lost' => 'danger',
+                        'For Disposal' => 'primary',
+                        'Disposed' => 'danger',
+                        'Borrowed' => 'indigo',
+                    }),
                 Tables\Columns\TextColumn::make('date_acquired')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('supplier')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('quantity')
+                Tables\Columns\TextColumn::make('amount')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('specification')
+                Tables\Columns\TextColumn::make('estimated_life')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('item_no')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('property_no')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('control_no')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('serial_no')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('no_of_stocks')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('restocking_point')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('person_liable')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('remarks')
+                    ->searchable(),
             ])
             ->filters([
                 //

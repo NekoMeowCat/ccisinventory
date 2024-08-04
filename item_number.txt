@@ -1,25 +1,6 @@
-DB::transaction:
-
-Purpose: Wraps the enclosed operations within a database transaction. Transactions ensure that all database operations within the block are treated as a single unit of work. If any operation fails, the entire transaction is rolled back, preventing partial updates and maintaining data integrity.
-Usage: This is crucial when dealing with concurrent operations to prevent race conditions, where multiple processes might try to perform the same operation simultaneously.
-function () use ($prefix, $year):
-
-Purpose: This is an anonymous function that serves as a callback for the transaction. The use keyword allows the function to access the $prefix and $year variables from the parent scope.
-Variables: $prefix is the prefix for the item number (e.g., "ITEM"), and $year is the current year.
-self::whereYear('created_at', $year):
-
-Purpose: This Eloquent query filters the records to include only those created in the specified year.
-whereYear Method: A convenience method that extracts the year from the created_at timestamp and filters the results.
-->where('item_number', 'LIKE', "$prefix-$year-%"):
-
-Purpose: This further filters the records to include only those where the item_number matches the specified pattern. The pattern $prefix-$year-% ensures that only item numbers with the correct prefix and year are considered.
-LIKE Operator: Used to perform pattern matching in SQL. The % wildcard matches any sequence of characters.
-->orderBy('item_number', 'desc'):
-
-Purpose: Sorts the results by the item_number in descending order.
-desc Parameter: Ensures that the most recent (highest) item number comes first in the results.
-->value('item_number'):
-
-Purpose: Retrieves the value of the item_number column from the first record in the sorted results.
-Efficiency: This method is more efficient than fetching all records and then selecting the first one. It directly gets the value of the specified column from the first row of the query result.
-How It Works T
+1. Import and Export Excel
+2. Equipment monitoring & Facility
+3. Reports Chart
+4. Change equipment columns from csv headers
+5. Filtering columns
+6. Status // Working, For Repair, For Replacement, Lost, For disposal, disposed, borrowed.
