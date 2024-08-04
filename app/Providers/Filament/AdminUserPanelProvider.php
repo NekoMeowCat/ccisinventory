@@ -39,9 +39,7 @@ class AdminUserPanelProvider extends PanelProvider
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
             ])
-            ->plugins([
-                \EightyNine\Approvals\ApprovalPlugin::make()
-            ])
+
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

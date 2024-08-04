@@ -13,19 +13,24 @@ return new class extends Migration
     {
         Schema::create('equipment', function (Blueprint $table) {
             $table->id();
-            $table->string('unit_id');
-            $table->string('brand_name');
-            $table->string('item_number');
-            $table->string('property_number');
-            $table->string('control_number');
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
-            $table->string('status');
-            $table->string('date_acquired');
-            $table->string('supplier');
-            $table->string('quantity');
-            $table->string('specification');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('unit_no')->nullable();
+            $table->string('description')->nullable();
+            $table->string('specifications')->nullable();
             $table->foreignId('facility_id')->constrained()->onDelete('cascade');
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->string('status')->nullable();
+            $table->string('date_acquired')->nullable();
+            $table->string('supplier')->nullable();
+            $table->string('amount')->nullable();
+            $table->string('estimated_life')->nullable();
+            $table->string('item_no')->nullable();
+            $table->string('property_no')->nullable();
+            $table->string('control_no')->nullable();
+            $table->string('serial_no')->nullable();
+            $table->string('no_of_stocks')->nullable();
+            $table->string('restocking_point')->nullable();
+            $table->string('person_liable')->nullable();
+            $table->string('remarks')->nullable();
             $table->timestamps();
         });
     }
