@@ -12,8 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Filament\Forms\Components\Section;
 
 class UserResource extends Resource
@@ -22,9 +21,12 @@ class UserResource extends Resource
 
     protected static ?string $navigationGroup = 'User Management';
 
-    protected static ?string $activeNavigationIcon = 'heroicon-o-user-group';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {
@@ -46,7 +48,7 @@ class UserResource extends Resource
                             ->password()
                             ->required()
                             ->revealable()
-                            ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                            ->dehydrateStateUsing(fn($state) => Hash::make($state))
                             ->hiddenOn('edit')
                     ])
             ]);
@@ -61,7 +63,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('roles.name')->label('Role')
-                    ->formatStateUsing(fn ($state): string => Str::headline($state))
+                    ->formatStateUsing(fn($state): string => Str::headline($state))
                     ->colors(['info'])
                     ->badge(),
             ])
@@ -69,13 +71,23 @@ class UserResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
                 ]),
             ]);
+    }
+
+    public static function getPermissions(User $user)
+    {
+        // Retrieve the user's permissions from the roles or any other source
+        // This may involve accessing roles and their associated permissions
+        return $user->getAllPermissions()->pluck('name'); // Adjust according to your setup
     }
 
     public static function getRelations(): array

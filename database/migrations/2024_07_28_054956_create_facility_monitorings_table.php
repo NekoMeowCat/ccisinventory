@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('facility_id')->constrained()->onDelete('cascade');
             $table->foreignId('monitored_by')->constrained('users')->onDelete('cascade');
+            $table->string('monitored_date')->nullable();
             $table->string('remarks')->nullable();
             $table->string('status')->nullable();
-            $table->string('facility_img')->nullable();
+            // $table->string('facility_img')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +28,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('facility_monitorings');
+        Schema::table('facility_monitorings', function (Blueprint $table) {
+
+            $table->dropColumn('facility_img')->nullable();
+        });
     }
 };

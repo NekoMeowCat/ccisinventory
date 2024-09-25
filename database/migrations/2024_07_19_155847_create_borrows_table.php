@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('equipment_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('facility_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('request_status');
-            $table->string('request_form');
+            $table->string('request_form')->nullable();
             $table->timestamps();
         });
     }
