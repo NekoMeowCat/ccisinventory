@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Equipment;
 
 class EquipmentMonitoring extends Model
 {
@@ -13,10 +14,11 @@ class EquipmentMonitoring extends Model
 
     protected $fillable = [
         'equipment_id',
-        'facility_id',
         'monitored_by',
-        'status',
+        'monitored_date',
+        'monitoring_status',
         'remarks',
+        'availability',
     ];
 
     public function equipment()
@@ -29,7 +31,7 @@ class EquipmentMonitoring extends Model
         return $this->belongsTo(Facility::class);
     }
 
-    public function monitoredBy()
+    public function user()
     {
         return $this->belongsTo(User::class, 'monitored_by');
     }

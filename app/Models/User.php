@@ -14,40 +14,40 @@ use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasPanelShield;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
 
-    public function canAccessPanel(Panel $panel): bool
-    {
-        $user = auth()->user(); // Get the authenticated user
-        $userRole = $user->roles()->pluck('name')->first(); // Assuming the user has a single role
+    // public function canAccessPanel(Panel $panel): bool
+    // {
+    //     $user = auth()->user(); // Get the authenticated user
+    //     $userRole = $user->roles()->pluck('name')->first(); // Assuming the user has a single role
 
-        // Get the panel id or path
-        $panelId = $panel->getId(); // Method to get panel ID, adjust if necessary
+    //     // Get the panel id or path
+    //     $panelId = $panel->getId(); // Method to get panel ID, adjust if necessary
 
-        // Define restricted panels for each role
-        $restrictedPanels = [
-            'panel_user' => ['admin', 'admin_user'], // Panel_user cannot access admin and admin_user panels
-            'Staff' => ['admin'], // Staff cannot access admin panel
-            'Admin' => ['admin'], // Admin cannot access admin panel
-        ];
+    //     // Define restricted panels for each role
+    //     $restrictedPanels = [
+    //         'panel_user' => ['admin', 'admin_user'], // Panel_user cannot access admin and admin_user panels
+    //         'Staff' => ['admin'], // Staff cannot access admin panel
+    //         'Admin' => ['admin'], // Admin cannot access admin panel
+    //     ];
 
-        // Check access based on the user's role
-        if (isset($restrictedPanels[$userRole])) {
-            return !in_array($panelId, $restrictedPanels[$userRole]);
-        }
+    //     // Check access based on the user's role
+    //     if (isset($restrictedPanels[$userRole])) {
+    //         return !in_array($panelId, $restrictedPanels[$userRole]);
+    //     }
 
-        // Other roles can access all panels
-        return true;
-    }
+    //     // Other roles can access all panels
+    //     return true;
+    // }
 
-    protected function getPanelId(Panel $panel): string
-    {
-        // Assuming the panel ID is set in the configuration
-        return $panel->id(); // Adjust this method based on how you access the ID
-    }
+    // protected function getPanelId(Panel $panel): string
+    // {
+    //     // Assuming the panel ID is set in the configuration
+    //     return $panel->id(); // Adjust this method based on how you access the ID
+    // }
 
 
 

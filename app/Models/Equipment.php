@@ -42,11 +42,14 @@ class Equipment extends Model
         'property_no',
         'control_no',
         'serial_no',
+        'stock_unit',
         'no_of_stocks',
         'restocking_point',
         'person_liable',
         'remarks',
-        'name'
+        'stock_unit',
+        'name',
+        'availability'
     ];
 
     public function category()
@@ -62,6 +65,11 @@ class Equipment extends Model
     public function facility()
     {
         return $this->belongsTo(Facility::class);
+    }
+
+    public function stockUnit()
+    {
+        return $this->belongsTo(StockUnit::class, 'stock_unit');
     }
 
     // public static function generateItemNumber()

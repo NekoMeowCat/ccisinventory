@@ -16,9 +16,9 @@ class FacilityMonitoring extends Model
     protected $fillable = [
         'facility_id',
         'monitored_by',
+        'monitored_date',
         'status',
         'remarks',
-        'facility_img',
     ];
 
     // Define relationships
@@ -27,7 +27,7 @@ class FacilityMonitoring extends Model
         return $this->belongsTo(Facility::class);
     }
 
-    public function monitoredBy()
+    public function user()
     {
         return $this->belongsTo(User::class, 'monitored_by');
     }

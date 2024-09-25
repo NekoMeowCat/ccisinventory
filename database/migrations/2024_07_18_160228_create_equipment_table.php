@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('specifications')->nullable();
             $table->foreignId('facility_id')->constrained()->onDelete('cascade');
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->foreignId('stock_unit')->constrained('stock_unit')->onDelete('cascade');
             $table->string('status')->nullable();
             $table->string('date_acquired')->nullable();
             $table->string('supplier')->nullable();

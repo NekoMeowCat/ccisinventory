@@ -18,7 +18,15 @@ class Borrow extends ApprovableModel
         'facility_id',
         'request_status',
         'request_form',
-        'name'
+        'returned_date',
+        'borrowed_date',
+        'status',
+        'remarks',
+        'name',
+        'date',
+        'purpose',
+        'date_and_time_of_use',
+        'college_department_office'
     ];
 
     public function user()

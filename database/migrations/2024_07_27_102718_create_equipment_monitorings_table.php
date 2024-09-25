@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('equipment_monitorings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('equipment_id')->constrained()->onDelete('cascade');
-            $table->foreignId('facility_id')->constrained()->onDelete('cascade');
+            // $table->foreignId('facility_id')->constrained()->onDelete('cascade');
             $table->foreignId('monitored_by')->constrained('users')->onDelete('cascade');
             $table->string('remarks')->nullable();
             $table->string('status')->nullable();
